@@ -10,7 +10,7 @@ variable "env" {
 
 variable "project" {
   description = "The project name"
-  default = "realworld-example"
+  default     = "realworld-example"
 }
 
 variable "vpc_cidr_block" {
