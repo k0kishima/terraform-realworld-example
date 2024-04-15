@@ -37,3 +37,11 @@ module "ecs" {
   ecs_security_group = module.ecs.ecs_security_group_id
   target_group_arn   = module.alb.target_group_arn
 }
+
+module "codebuild" {
+  source = "../modules/codebuild"
+
+  env      = "staging"
+  project  = "realworld-example"
+  repo_url = "https://github.com/k0kishima/nuxt3-realworld-example-app"
+}
