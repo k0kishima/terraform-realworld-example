@@ -52,7 +52,7 @@ resource "aws_ecs_service" "service" {
   load_balancer {
     target_group_arn = var.target_group_arn
     container_name   = "app"
-    container_port   = 80
+    container_port   = 3000
   }
 
   desired_count = 1
@@ -64,8 +64,8 @@ resource "aws_security_group" "ecs" {
   vpc_id      = var.vpc_id
 
   ingress {
-    from_port       = 80
-    to_port         = 80
+    from_port       = 3000
+    to_port         = 3000
     protocol        = "tcp"
     security_groups = [var.alb_security_group]
   }
