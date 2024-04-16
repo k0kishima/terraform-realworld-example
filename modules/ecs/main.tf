@@ -17,13 +17,12 @@ resource "aws_ecs_task_definition" "task" {
   container_definitions = jsonencode([
     {
       name      = "app"
-      image     = "busybox"
-      command   = ["sh", "-c", "mkdir -p /www && echo 'Hello, World' > /www/index.html && httpd -f -p 80 -h /www"]
+      image     = "${var.frontend_repository_url}:latest"
       essential = true
       portMappings = [
         {
-          containerPort = 80
-          hostPort      = 80
+          containerPort = 3000
+          hostPort      = 3000
         }
       ]
       logConfiguration = {

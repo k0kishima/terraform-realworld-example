@@ -37,3 +37,8 @@ variable "target_group_arn" {
   description = "The ARN of the target group for the ECS service"
   type        = string
 }
+
+variable "frontend_repository_url" {
+  description = "The repository URL for the frontend application"
+  type        = string
+}
