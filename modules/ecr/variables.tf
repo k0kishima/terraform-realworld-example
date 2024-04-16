@@ -12,14 +12,3 @@ variable "project" {
   description = "The project name"
   default     = "realworld-example"
 }
-
-variable "repo_url" {
-  default     = "https://github.com/k0kishima/nuxt3-realworld-example-app.git"
-  type        = string
-  description = "The URL of the GitHub repository"
-}
-
-variable "frontend_ecr_name" {
-  description = "Name of the frontend ECR repository"
-  type        = string
-}
