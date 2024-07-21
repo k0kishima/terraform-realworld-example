@@ -3,15 +3,15 @@ module "networking" {
 
   env            = "staging"
   project        = "realworld-example"
-  vpc_cidr_block = "10.1.0.0/16"
+  vpc_cidr_block = "10.0.0.0/16"
 
   availability_zones = {
     ap-northeast-1a = {
-      order = 0
+      order = 1
       id    = "az1"
     }
     ap-northeast-1c = {
-      order = 1
+      order = 2
       id    = "az2"
     }
   }
