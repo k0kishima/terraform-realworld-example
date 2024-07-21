@@ -7,11 +7,11 @@ module "networking" {
 
   availability_zones = {
     ap-northeast-1a = {
-      order = 0
+      order = 1
       id    = "az1"
     }
     ap-northeast-1c = {
-      order = 1
+      order = 2
       id    = "az2"
     }
   }

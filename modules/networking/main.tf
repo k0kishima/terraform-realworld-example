@@ -10,7 +10,7 @@ resource "aws_vpc" "this" {
   }
 }
 
-resource "aws_subnet" "private" {
+resource "aws_subnet" "public" {
   for_each          = var.availability_zones
   vpc_id            = aws_vpc.this.id
   availability_zone = each.key
@@ -19,11 +19,11 @@ resource "aws_subnet" "private" {
   tags = {
     Env     = var.env
     Project = var.project
-    Name    = "${var.project}-${var.env}-private-${each.value.id}"
+    Name    = "${var.project}-${var.env}-public-${each.value.id}"
   }
 }
 
-resource "aws_subnet" "public" {
+resource "aws_subnet" "private" {
   for_each          = var.availability_zones
   vpc_id            = aws_vpc.this.id
   availability_zone = each.key
@@ -32,7 +32,7 @@ resource "aws_subnet" "public" {
   tags = {
     Env     = var.env
     Project = var.project
-    Name    = "${var.project}-${var.env}-public-${each.value.id}"
+    Name    = "${var.project}-${var.env}-private-${each.value.id}"
   }
 }
 
