@@ -6,7 +6,9 @@ resource "aws_lb" "alb" {
   subnets            = var.public_subnets
 
   tags = {
-    Name = "${var.project}-${var.env}-alb"
+    Env     = var.env
+    Project = var.project
+    Name    = "${var.project}-${var.env}-alb"
   }
 }
 
@@ -30,7 +32,9 @@ resource "aws_security_group" "alb" {
   }
 
   tags = {
-    Name = "${var.project}-${var.env}-alb-sg"
+    Env     = var.env
+    Project = var.project
+    Name    = "${var.project}-${var.env}-alb-sg"
   }
 }
 
@@ -54,7 +58,9 @@ resource "aws_lb_target_group" "tg" {
   }
 
   tags = {
-    Name = "${var.project}-${var.env}-tg"
+    Env     = var.env
+    Project = var.project
+    Name    = "${var.project}-${var.env}-tg"
   }
 }
 
@@ -66,5 +72,11 @@ resource "aws_lb_listener" "listener" {
   default_action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.tg.arn
+  }
+
+  tags = {
+    Env     = var.env
+    Project = var.project
+    Name    = "${var.project}-${var.env}-listener"
   }
 }

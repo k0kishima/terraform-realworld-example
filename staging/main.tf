@@ -1,8 +1,13 @@
+locals {
+  env     = "staging"
+  project = "realworld-example"
+}
+
 module "networking" {
   source = "../modules/networking"
 
-  env            = "staging"
-  project        = "realworld-example"
+  env            = local.env
+  project        = local.project
   vpc_cidr_block = "10.0.0.0/16"
 
   availability_zones = {
@@ -20,8 +25,8 @@ module "networking" {
 module "alb" {
   source = "../modules/alb"
 
-  env            = "staging"
-  project        = "realworld-example"
+  env            = local.env
+  project        = local.project
   vpc_id         = module.networking.vpc_id
   public_subnets = module.networking.public_subnets
 }
@@ -29,8 +34,8 @@ module "alb" {
 module "ecs" {
   source = "../modules/ecs"
 
-  env                     = "staging"
-  project                 = "realworld-example"
+  env                     = local.env
+  project                 = local.project
   vpc_id                  = module.networking.vpc_id
   subnets                 = module.networking.private_subnets
   alb_security_group      = module.alb.alb_security_group_id
@@ -42,15 +47,15 @@ module "ecs" {
 module "ecr" {
   source = "../modules/ecr"
 
-  env     = "staging"
-  project = "realworld-example"
+  env     = local.env
+  project = local.project
 }
 
 module "codebuild" {
   source = "../modules/codebuild"
 
-  env               = "staging"
-  project           = "realworld-example"
+  env               = local.env
+  project           = local.project
   repo_url          = "https://github.com/k0kishima/nuxt3-realworld-example-app"
   frontend_ecr_name = module.ecr.frontend_name
 }
@@ -58,7 +63,7 @@ module "codebuild" {
 module "iam" {
   source = "../modules/iam"
 
-  env              = "staging"
-  project          = "realworld-example"
+  env              = local.env
+  project          = local.project
   frontend_ecr_arn = module.ecr.frontend_arn
 }
