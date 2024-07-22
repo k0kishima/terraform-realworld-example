@@ -78,7 +78,9 @@ resource "aws_security_group" "ecs" {
   }
 
   tags = {
-    Name = "${var.project}-${var.env}-ecs-sg"
+    Env     = var.env
+    Project = var.project
+    Name    = "${var.project}-${var.env}-ecs-sg"
   }
 }
 

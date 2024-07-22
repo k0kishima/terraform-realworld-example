@@ -27,7 +27,7 @@ resource "aws_subnet" "private" {
   for_each          = var.availability_zones
   vpc_id            = aws_vpc.this.id
   availability_zone = each.key
-  cidr_block        = cidrsubnet(aws_vpc.this.cidr_block, 8, 3 + each.value.order)
+  cidr_block        = cidrsubnet(aws_vpc.this.cidr_block, 8, 100 + each.value.order)
 
   tags = {
     Env     = var.env
@@ -40,7 +40,9 @@ resource "aws_internet_gateway" "this" {
   vpc_id = aws_vpc.this.id
 
   tags = {
-    Name = "${var.project}-${var.env}-igw"
+    Env     = var.env
+    Project = var.project
+    Name    = "${var.project}-${var.env}-igw"
   }
 }
 
@@ -53,7 +55,9 @@ resource "aws_route_table" "public" {
   }
 
   tags = {
-    Name = "${var.project}-${var.env}-public-rt"
+    Env     = var.env
+    Project = var.project
+    Name    = "${var.project}-${var.env}-public-rt"
   }
 }
 
@@ -65,7 +69,7 @@ resource "aws_route_table_association" "public" {
 }
 
 resource "aws_eip" "nat" {
-  vpc = true
+  domain = "vpc"
 }
 
 resource "aws_nat_gateway" "nat" {
@@ -82,7 +86,9 @@ resource "aws_route_table" "private" {
   }
 
   tags = {
-    Name = "${var.project}-${var.env}-private-rt"
+    Env     = var.env
+    Project = var.project
+    Name    = "${var.project}-${var.env}-private-rt"
   }
 }
 

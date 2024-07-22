@@ -1,5 +1,5 @@
-variable "profile_name" {
+variable "frontend_app_repo_url" {
   type        = string
-  description = "The AWS CLI profile name"
-  default     = "terraform-realworld-example"
+  description = "URL of frontend application repository"
+  default     = "https://github.com/k0kishima/nuxt3-realworld-example-app"
 }
