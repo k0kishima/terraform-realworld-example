@@ -2,7 +2,7 @@ resource "aws_lb" "alb" {
   name               = "${var.project}-${var.env}-alb"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = [aws_security_group.alb.id]
+  security_groups    = [aws_security_group.alb_sg.id]
   subnets            = var.public_subnets
 
   tags = {
@@ -12,7 +12,7 @@ resource "aws_lb" "alb" {
   }
 }
 
-resource "aws_security_group" "alb" {
+resource "aws_security_group" "alb_sg" {
   name        = "${var.project}-${var.env}-alb-sg"
   description = "Security group for ALB"
   vpc_id      = var.vpc_id
@@ -38,7 +38,7 @@ resource "aws_security_group" "alb" {
   }
 }
 
-resource "aws_lb_target_group" "tg" {
+resource "aws_lb_target_group" "this" {
   name        = "${var.project}-${var.env}-tg"
   port        = 80
   protocol    = "HTTP"
@@ -64,19 +64,19 @@ resource "aws_lb_target_group" "tg" {
   }
 }
 
-resource "aws_lb_listener" "listener" {
+resource "aws_lb_listener" "http" {
   load_balancer_arn = aws_lb.alb.arn
   port              = 80
   protocol          = "HTTP"
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.tg.arn
+    target_group_arn = aws_lb_target_group.this.arn
   }
 
   tags = {
     Env     = var.env
     Project = var.project
-    Name    = "${var.project}-${var.env}-listener"
+    Name    = "${var.project}-${var.env}-http-listener"
   }
 }

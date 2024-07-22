@@ -34,14 +34,12 @@ module "alb" {
 module "ecs" {
   source = "../modules/ecs"
 
-  env                     = local.env
-  project                 = local.project
-  vpc_id                  = module.networking.vpc_id
-  subnets                 = module.networking.private_subnets
-  alb_security_group      = module.alb.alb_security_group_id
-  ecs_security_group      = module.ecs.ecs_security_group_id
-  target_group_arn        = module.alb.target_group_arn
-  frontend_repository_url = module.ecr.frontend_repository_url
+  env                = local.env
+  project            = local.project
+  vpc_id             = module.networking.vpc_id
+  subnets            = module.networking.private_subnets
+  alb_security_group = module.alb.alb_security_group_id
+  target_group_arn   = module.alb.target_group_arn
 }
 
 module "ecr" {
