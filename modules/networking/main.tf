@@ -27,7 +27,7 @@ resource "aws_subnet" "private" {
   for_each          = var.availability_zones
   vpc_id            = aws_vpc.this.id
   availability_zone = each.key
-  cidr_block        = cidrsubnet(aws_vpc.this.cidr_block, 8, 3 + each.value.order)
+  cidr_block        = cidrsubnet(aws_vpc.this.cidr_block, 8, 100 + each.value.order)
 
   tags = {
     Env     = var.env
