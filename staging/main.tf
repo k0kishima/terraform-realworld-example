@@ -56,7 +56,7 @@ module "codebuild" {
 
   env               = local.env
   project           = local.project
-  repo_url          = "https://github.com/k0kishima/nuxt3-realworld-example-app"
+  repo_url          = var.frontend_app_repo_url
   frontend_ecr_name = module.ecr.frontend_name
 }
 
