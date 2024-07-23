@@ -1,3 +1,3 @@
-output "github_actions_user_name" {
-  value = aws_iam_user.github_actions_user.name
+output "ecs_task_execution_role_arn" {
+  value = aws_iam_role.ecs_task_execution_role.arn
 }

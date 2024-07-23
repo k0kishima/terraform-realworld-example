@@ -1,50 +1,27 @@
-resource "aws_iam_user" "github_actions_user" {
-  name = "${var.project}-${var.env}-github-actions-user"
+resource "aws_iam_role" "ecs_task_execution_role" {
+  name = "${var.project}-ecs-task-execution-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Effect = "Allow",
+      Principal = {
+        Service = "ecs-tasks.amazonaws.com"
+      },
+      Action = "sts:AssumeRole"
+    }]
+  })
 
   tags = {
-    Project = var.project
     Env     = var.env
+    Project = var.project
+    Name    = "${var.project}-ecs-task-execution-role"
   }
 }
 
-resource "aws_iam_user_policy" "github_actions_policy" {
-  user   = aws_iam_user.github_actions_user.name
-  policy = data.aws_iam_policy_document.codebuild_policy.json
-}
+resource "aws_iam_role_policy_attachment" "ecs_task_execution_policy_attachment" {
+  depends_on = [aws_iam_role.ecs_task_execution_role]
 
-data "aws_iam_policy_document" "codebuild_policy" {
-  statement {
-    actions = [
-      "codebuild:StartBuild",
-      "codebuild:BatchGetBuilds",
-      "codebuild:StopBuild"
-    ]
-    resources = ["arn:aws:codebuild:ap-northeast-1:500337985842:project/${var.project}-${var.env}-frontend-app-build"]
-    effect    = "Allow"
-  }
-
-  statement {
-    actions = [
-      "ecr:GetAuthorizationToken",
-      "ecr:BatchCheckLayerAvailability",
-      "ecr:GetDownloadUrlForLayer",
-      "ecr:GetRepositoryPolicy",
-      "ecr:DescribeRepositories",
-      "ecr:ListImages",
-      "ecr:DescribeImages",
-      "ecr:BatchGetImage",
-      "ecr:InitiateLayerUpload",
-      "ecr:UploadLayerPart",
-      "ecr:CompleteLayerUpload",
-      "ecr:PutImage"
-    ]
-    resources = [var.frontend_ecr_arn]
-    effect    = "Allow"
-  }
-
-  statement {
-    actions   = ["logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents"]
-    resources = ["arn:aws:logs:ap-northeast-1:500337985842:log-group:/aws/codebuild/${var.project}-${var.env}-frontend-app-build:*"]
-    effect    = "Allow"
-  }
+  role       = aws_iam_role.ecs_task_execution_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
