@@ -53,15 +53,6 @@ module "ecr" {
   project = local.project
 }
 
-module "codebuild" {
-  source = "../modules/codebuild"
-
-  env               = local.env
-  project           = local.project
-  repo_url          = var.frontend_app_repo_url
-  frontend_ecr_name = module.ecr.frontend_name
-}
-
 module "iam" {
   source = "../modules/iam"
 
