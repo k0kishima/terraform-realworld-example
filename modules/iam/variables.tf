@@ -12,8 +12,3 @@ variable "project" {
   description = "The project name"
   default     = "realworld-example"
 }
-
-variable "frontend_ecr_arn" {
-  description = "ARN of the frontend ECR repository"
-  type        = string
-}

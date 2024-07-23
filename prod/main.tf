@@ -38,12 +38,13 @@ module "alb" {
 module "ecs" {
   source = "../modules/ecs"
 
-  env                = local.env
-  project            = local.project
-  vpc_id             = module.networking.vpc_id
-  subnets            = module.networking.private_subnets
-  alb_security_group = module.alb.alb_security_group_id
-  target_group_arn   = module.alb.target_group_arn
+  env                         = local.env
+  project                     = local.project
+  vpc_id                      = module.networking.vpc_id
+  subnets                     = module.networking.private_subnets
+  alb_security_group          = module.alb.alb_security_group_id
+  target_group_arn            = module.alb.target_group_arn
+  ecs_task_execution_role_arn = module.iam.ecs_task_execution_role_arn
 }
 
 module "ecr" {
@@ -56,7 +57,6 @@ module "ecr" {
 module "iam" {
   source = "../modules/iam"
 
-  env              = local.env
-  project          = local.project
-  frontend_ecr_arn = module.ecr.frontend_arn
+  env     = local.env
+  project = local.project
 }
