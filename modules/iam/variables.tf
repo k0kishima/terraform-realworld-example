@@ -12,3 +12,9 @@ variable "project" {
   description = "The project name"
   default     = "realworld-example"
 }
+
+variable "github_repository" {
+  type        = string
+  description = "The GitHub repository in the format 'owner/repo', e.g., 'k0kishima/nuxt3-realworld-example-app'"
+  default     = "k0kishima/nuxt3-realworld-example-app"
+}
