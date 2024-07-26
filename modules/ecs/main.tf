@@ -22,8 +22,8 @@ resource "aws_ecs_task_definition" "this" {
 
   container_definitions = jsonencode([
     {
-      name      = "app"
-      image     = "nginx"
+      name      = "nginx"
+      image     = "nginx:latest"
       essential = true
       portMappings = [
         {
@@ -44,7 +44,7 @@ resource "aws_ecs_task_definition" "this" {
 }
 
 resource "aws_ecs_service" "this" {
-  name            = "${var.project}-${var.env}-service"
+  name            = "${var.project}-${var.env}-ecs-service"
   cluster         = aws_ecs_cluster.this.id
   task_definition = aws_ecs_task_definition.this.arn
   launch_type     = "FARGATE"
@@ -57,11 +57,17 @@ resource "aws_ecs_service" "this" {
 
   load_balancer {
     target_group_arn = var.target_group_arn
-    container_name   = "app"
+    container_name   = "nginx"
     container_port   = 80
   }
 
   desired_count = 1
+
+  tags = {
+    Env     = var.env
+    Project = var.project
+    Name    = "${var.project}-${var.env}-ecs-service"
+  }
 }
 
 resource "aws_security_group" "fargate_sg" {
@@ -74,6 +80,13 @@ resource "aws_security_group" "fargate_sg" {
     to_port         = 80
     protocol        = "tcp"
     security_groups = [var.alb_security_group]
+  }
+
+  ingress {
+    from_port   = 3000
+    to_port     = 3000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
