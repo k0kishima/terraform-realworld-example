@@ -41,6 +41,7 @@ module "ecs" {
   alb_security_group          = module.alb.alb_security_group_id
   target_group_arn            = module.alb.target_group_arn
   ecs_task_execution_role_arn = module.iam.ecs_task_execution_role_arn
+  ecs_task_role_arn           = module.iam.ecs_task_role_arn
 }
 
 module "ecr" {
