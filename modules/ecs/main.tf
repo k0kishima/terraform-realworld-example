@@ -13,7 +13,7 @@ resource "aws_cloudwatch_log_group" "ecs_logs" {
 }
 
 resource "aws_ecs_task_definition" "this" {
-  family                   = "${var.project}-${var.env}-task"
+  family                   = "${var.project}-${var.env}-ecs-task"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   cpu                      = "256"
@@ -37,7 +37,7 @@ resource "aws_ecs_task_definition" "this" {
         options = {
           awslogs-group         = aws_cloudwatch_log_group.ecs_logs.name
           awslogs-region        = "ap-northeast-1"
-          awslogs-stream-prefix = "ecs"
+          awslogs-stream-prefix = "nginx"
         }
       }
     }

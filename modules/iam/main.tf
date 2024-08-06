@@ -1,5 +1,5 @@
 resource "aws_iam_role" "ecs_task_execution_role" {
-  name = "${var.project}-ecs-task-execution-role"
+  name = "${var.project}-${var.env}-ecs-task-execution-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -27,7 +27,7 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution_policy_attachment"
 }
 
 resource "aws_iam_role" "ecs_task_role" {
-  name = "${var.project}-${var.env}-task-role"
+  name = "${var.project}-${var.env}-ecs-task-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -84,6 +84,8 @@ resource "aws_iam_policy" "task_policy" {
 }
 
 resource "aws_iam_role_policy_attachment" "task_policy_attachment" {
+  depends_on = [aws_iam_policy.task_policy]
+
   role       = aws_iam_role.ecs_task_role.name
   policy_arn = aws_iam_policy.task_policy.arn
 }
