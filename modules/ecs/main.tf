@@ -52,7 +52,7 @@ resource "aws_ecs_service" "this" {
   enable_execute_command = true
 
   network_configuration {
-    subnets          = var.subnets
+    subnets          = var.subnet_ids
     security_groups  = [aws_security_group.fargate_sg.id]
     assign_public_ip = true
   }

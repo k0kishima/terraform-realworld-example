@@ -18,7 +18,7 @@ variable "vpc_id" {
   type        = string
 }
 
-variable "subnets" {
+variable "subnet_ids" {
   description = "A list of subnet IDs for the ECS tasks"
   type        = list(string)
 }

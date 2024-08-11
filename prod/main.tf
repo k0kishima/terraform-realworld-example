@@ -3,6 +3,15 @@ locals {
   project = "realworld-example"
 }
 
+data "aws_ssm_parameter" "db_username" {
+  name = "/realworld-example/staging/db/username"
+}
+
+data "aws_ssm_parameter" "db_password" {
+  name            = "/realworld-example/staging/db/password"
+  with_decryption = true
+}
+
 module "networking" {
   source = "../modules/networking"
 
@@ -29,10 +38,10 @@ module "networking" {
 module "alb" {
   source = "../modules/alb"
 
-  env            = local.env
-  project        = local.project
-  vpc_id         = module.networking.vpc_id
-  public_subnets = module.networking.public_subnets
+  env               = local.env
+  project           = local.project
+  vpc_id            = module.networking.vpc_id
+  public_subnet_ids = module.networking.public_subnet_ids
 }
 
 module "ecs" {
@@ -41,7 +50,7 @@ module "ecs" {
   env                         = local.env
   project                     = local.project
   vpc_id                      = module.networking.vpc_id
-  subnets                     = module.networking.private_subnets
+  subnet_ids                  = module.networking.private_subnet_ids
   alb_security_group          = module.alb.alb_security_group_id
   target_group_arn            = module.alb.target_group_arn
   ecs_task_execution_role_arn = module.iam.ecs_task_execution_role_arn
@@ -60,4 +69,16 @@ module "iam" {
 
   env     = local.env
   project = local.project
+}
+
+module "database" {
+  source             = "../modules/database"
+  env                = local.env
+  project            = local.project
+  vpc_id             = module.networking.vpc_id
+  vpc_cidr_block     = module.networking.vpc_cidr_block
+  availability_zones = ["ap-northeast-1a", "ap-northeast-1c", "ap-northeast-1d"]
+  private_subnet_ids = module.networking.private_subnet_ids
+  master_username    = data.aws_ssm_parameter.db_username.value
+  db_master_password = data.aws_ssm_parameter.db_password.value
 }
