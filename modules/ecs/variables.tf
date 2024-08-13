@@ -18,7 +18,7 @@ variable "vpc_id" {
   type        = string
 }
 
-variable "subnets" {
+variable "subnet_ids" {
   description = "A list of subnet IDs for the ECS tasks"
   type        = list(string)
 }
@@ -28,8 +28,13 @@ variable "alb_security_group" {
   type        = string
 }
 
-variable "target_group_arn" {
-  description = "The ARN of the target group for the ECS service"
+variable "frontend_target_group_arn" {
+  description = "The ARN of the target group for the ECS service for frontend"
+  type        = string
+}
+
+variable "backend_target_group_arn" {
+  description = "The ARN of the target group for the ECS service for backend"
   type        = string
 }
 
