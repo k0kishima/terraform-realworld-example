@@ -1,5 +1,5 @@
-resource "aws_ecr_repository" "proxy" {
-  name                 = "${var.project}-${var.env}-proxy-ecr-repo"
+resource "aws_ecr_repository" "frontend_proxy" {
+  name                 = "${var.project}-${var.env}-frontend-proxy-ecr-repo"
   image_tag_mutability = "MUTABLE"
 
   image_scanning_configuration {
@@ -9,7 +9,7 @@ resource "aws_ecr_repository" "proxy" {
   tags = {
     Env     = var.env
     Project = var.project
-    Name    = "${var.project}-${var.env}-proxy-ecr-repo"
+    Name    = "${var.project}-${var.env}-frontend-proxy-ecr-repo"
   }
 }
 
@@ -27,6 +27,22 @@ resource "aws_ecr_repository" "frontend" {
     Name    = "${var.project}-${var.env}-frontend-ecr-repo"
   }
 }
+
+resource "aws_ecr_repository" "backend_proxy" {
+  name                 = "${var.project}-${var.env}-backend-proxy-ecr-repo"
+  image_tag_mutability = "MUTABLE"
+
+  image_scanning_configuration {
+    scan_on_push = true
+  }
+
+  tags = {
+    Env     = var.env
+    Project = var.project
+    Name    = "${var.project}-${var.env}-backend-proxy-ecr-repo"
+  }
+}
+
 
 resource "aws_ecr_repository" "backend" {
   name                 = "${var.project}-${var.env}-backend-ecr-repo"
@@ -62,14 +78,20 @@ locals {
   }
 }
 
-resource "aws_ecr_lifecycle_policy" "proxy" {
-  repository = aws_ecr_repository.proxy.name
+resource "aws_ecr_lifecycle_policy" "frontend_proxy" {
+  repository = aws_ecr_repository.frontend_proxy.name
 
   policy = jsonencode(local.lifecycle_policy)
 }
 
 resource "aws_ecr_lifecycle_policy" "frontend" {
   repository = aws_ecr_repository.frontend.name
+
+  policy = jsonencode(local.lifecycle_policy)
+}
+
+resource "aws_ecr_lifecycle_policy" "backend_proxy" {
+  repository = aws_ecr_repository.backend_proxy.name
 
   policy = jsonencode(local.lifecycle_policy)
 }
