@@ -13,8 +13,14 @@ variable "project" {
   default     = "realworld-example"
 }
 
-variable "github_repository" {
+variable "frontend_github_repository" {
   type        = string
   description = "The GitHub repository in the format 'owner/repo', e.g., 'k0kishima/nuxt3-realworld-example-app'"
   default     = "k0kishima/nuxt3-realworld-example-app"
+}
+
+variable "backend_github_repository" {
+  type        = string
+  description = "The GitHub repository in the format 'owner/repo', e.g., 'k0kishima/nuxt3-realworld-example-app'"
+  default     = "k0kishima/golang-realworld-example-app"
 }

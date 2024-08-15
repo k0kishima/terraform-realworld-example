@@ -107,9 +107,12 @@ resource "aws_iam_role" "github_actions_role" {
           Federated = aws_iam_openid_connect_provider.github_actions.arn
         },
         Action = "sts:AssumeRoleWithWebIdentity",
-        Condition = {
-          StringEquals = {
-            "token.actions.githubusercontent.com:sub" = "repo:${var.github_repository}:ref:refs/heads/main"
+        Condition : {
+          StringEquals : {
+            "token.actions.githubusercontent.com:sub" : [
+              "repo:${var.frontend_github_repository}:ref:refs/heads/main",
+              "repo:${var.backend_github_repository}:ref:refs/heads/main",
+            ]
           }
         }
       }
