@@ -13,8 +13,8 @@ resource "aws_ecr_repository" "frontend_proxy" {
   }
 }
 
-resource "aws_ecr_repository" "frontend" {
-  name                 = "${var.project}-${var.env}-frontend-ecr-repo"
+resource "aws_ecr_repository" "frontend_app" {
+  name                 = "${var.project}-${var.env}-frontend-app-ecr-repo"
   image_tag_mutability = "MUTABLE"
 
   image_scanning_configuration {
@@ -24,7 +24,7 @@ resource "aws_ecr_repository" "frontend" {
   tags = {
     Env     = var.env
     Project = var.project
-    Name    = "${var.project}-${var.env}-frontend-ecr-repo"
+    Name    = "${var.project}-${var.env}-frontend-app-ecr-repo"
   }
 }
 
@@ -44,8 +44,8 @@ resource "aws_ecr_repository" "backend_proxy" {
 }
 
 
-resource "aws_ecr_repository" "backend" {
-  name                 = "${var.project}-${var.env}-backend-ecr-repo"
+resource "aws_ecr_repository" "backend_app" {
+  name                 = "${var.project}-${var.env}-backend-app-ecr-repo"
   image_tag_mutability = "MUTABLE"
 
   image_scanning_configuration {
@@ -55,7 +55,7 @@ resource "aws_ecr_repository" "backend" {
   tags = {
     Env     = var.env
     Project = var.project
-    Name    = "${var.project}-${var.env}-backend-ecr-repo"
+    Name    = "${var.project}-${var.env}-backend-app-ecr-repo"
   }
 }
 
@@ -84,8 +84,8 @@ resource "aws_ecr_lifecycle_policy" "frontend_proxy" {
   policy = jsonencode(local.lifecycle_policy)
 }
 
-resource "aws_ecr_lifecycle_policy" "frontend" {
-  repository = aws_ecr_repository.frontend.name
+resource "aws_ecr_lifecycle_policy" "frontend_app" {
+  repository = aws_ecr_repository.frontend_app.name
 
   policy = jsonencode(local.lifecycle_policy)
 }
@@ -96,8 +96,8 @@ resource "aws_ecr_lifecycle_policy" "backend_proxy" {
   policy = jsonencode(local.lifecycle_policy)
 }
 
-resource "aws_ecr_lifecycle_policy" "backend" {
-  repository = aws_ecr_repository.backend.name
+resource "aws_ecr_lifecycle_policy" "backend_app" {
+  repository = aws_ecr_repository.backend_app.name
 
   policy = jsonencode(local.lifecycle_policy)
 }
