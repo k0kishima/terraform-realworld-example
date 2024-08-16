@@ -23,7 +23,7 @@ resource "aws_ecs_task_definition" "frontend" {
 
   container_definitions = jsonencode([
     {
-      name      = "frontend"
+      name      = "frontend-proxy"
       image     = "nginx:latest"
       essential = true
       portMappings = [
@@ -37,7 +37,7 @@ resource "aws_ecs_task_definition" "frontend" {
         options = {
           awslogs-group         = aws_cloudwatch_log_group.ecs_logs.name
           awslogs-region        = "ap-northeast-1"
-          awslogs-stream-prefix = "frontend"
+          awslogs-stream-prefix = "frontend-proxy"
         }
       }
     }
@@ -55,7 +55,7 @@ resource "aws_ecs_task_definition" "backend" {
 
   container_definitions = jsonencode([
     {
-      name      = "backend"
+      name      = "backend-proxy"
       image     = "nginx:latest"
       essential = true
       portMappings = [
@@ -69,7 +69,7 @@ resource "aws_ecs_task_definition" "backend" {
         options = {
           awslogs-group         = aws_cloudwatch_log_group.ecs_logs.name
           awslogs-region        = "ap-northeast-1"
-          awslogs-stream-prefix = "backend"
+          awslogs-stream-prefix = "backend-proxy"
         }
       }
     }
@@ -85,13 +85,13 @@ resource "aws_ecs_service" "frontend" {
 
   network_configuration {
     subnets          = var.subnet_ids
-    security_groups  = [aws_security_group.fargate_sg.id]
+    security_groups  = [aws_security_group.frontend.id]
     assign_public_ip = true
   }
 
   load_balancer {
     target_group_arn = var.frontend_target_group_arn
-    container_name   = "frontend"
+    container_name   = "frontend-proxy"
     container_port   = 80
   }
 
@@ -113,13 +113,13 @@ resource "aws_ecs_service" "backend" {
 
   network_configuration {
     subnets          = var.subnet_ids
-    security_groups  = [aws_security_group.fargate_sg.id]
+    security_groups  = [aws_security_group.backend.id]
     assign_public_ip = true
   }
 
   load_balancer {
     target_group_arn = var.backend_target_group_arn
-    container_name   = "backend"
+    container_name   = "backend-proxy"
     container_port   = 80
   }
 
@@ -132,9 +132,9 @@ resource "aws_ecs_service" "backend" {
   }
 }
 
-resource "aws_security_group" "fargate_sg" {
-  name        = "${var.project}-fargate-sg"
-  description = "Security group for Fargate tasks"
+resource "aws_security_group" "frontend" {
+  name        = "${var.project}-frontend-sg"
+  description = "Security group for Frontend Fargate tasks"
   vpc_id      = var.vpc_id
 
   ingress {
@@ -161,6 +161,39 @@ resource "aws_security_group" "fargate_sg" {
   tags = {
     Env     = var.env
     Project = var.project
-    Name    = "${var.project}-${var.env}-fargate-sg"
+    Name    = "${var.project}-${var.env}-frontend-sg"
+  }
+}
+
+resource "aws_security_group" "backend" {
+  name        = "${var.project}-backend-sg"
+  description = "Security group for Backend Fargate tasks"
+  vpc_id      = var.vpc_id
+
+  ingress {
+    from_port       = 80
+    to_port         = 80
+    protocol        = "tcp"
+    security_groups = [var.alb_security_group]
+  }
+
+  ingress {
+    from_port   = 8080
+    to_port     = 8080
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Env     = var.env
+    Project = var.project
+    Name    = "${var.project}-${var.env}-backend-sg"
   }
 }
