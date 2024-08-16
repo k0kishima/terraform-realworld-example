@@ -25,7 +25,7 @@ resource "aws_security_group" "alb_sg" {
 }
 
 resource "aws_lb" "frontend" {
-  name               = "${var.project}-${var.env}-fe-alb"
+  name               = "${var.project}-${var.env}-fe-alb" # If the name is too long, an error will occur, so I shorten it to "fe".
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.alb_sg.id]
@@ -64,7 +64,7 @@ resource "aws_lb_target_group" "frontend" {
   }
 }
 
-resource "aws_lb_listener" "http" {
+resource "aws_lb_listener" "frontend_http" {
   load_balancer_arn = aws_lb.frontend.arn
   port              = 80
   protocol          = "HTTP"
