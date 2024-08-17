@@ -1,5 +1,6 @@
 resource "aws_rds_cluster" "aurora" {
   cluster_identifier      = "${var.project}-${var.env}-aurora-cluster"
+  availability_zones      = var.availability_zones
   engine                  = "aurora-mysql"
   engine_version          = "8.0.mysql_aurora.3.03.0"
   database_name           = var.database_name
@@ -12,12 +13,38 @@ resource "aws_rds_cluster" "aurora" {
   storage_encrypted       = true
   skip_final_snapshot     = true
 
-  availability_zones = var.availability_zones
+  lifecycle {
+    ignore_changes = [
+      master_password,
+      tags,
+    ]
+  }
 
   tags = {
     Env     = var.env
     Project = var.project
     Name    = "${var.project}-${var.env}-aurora-cluster"
+  }
+}
+
+resource "aws_rds_cluster_instance" "aurora_instances" {
+  count              = 2
+  identifier         = "${var.project}-${var.env}-aurora-instance-${count.index + 1}"
+  cluster_identifier = aws_rds_cluster.aurora.id
+  instance_class     = "db.t3.medium" # TODO: 変数化
+  engine             = aws_rds_cluster.aurora.engine
+  engine_version     = aws_rds_cluster.aurora.engine_version
+
+  lifecycle {
+    ignore_changes = [
+      tags,
+    ]
+  }
+
+  tags = {
+    Env     = var.env
+    Project = var.project
+    Name    = "${var.project}-${var.env}-aurora-instance-${count.index + 1}"
   }
 }
 

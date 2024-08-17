@@ -141,7 +141,7 @@ resource "aws_security_group" "frontend" {
     from_port       = 80
     to_port         = 80
     protocol        = "tcp"
-    security_groups = [var.alb_security_group]
+    security_groups = [var.alb_security_group_id]
   }
 
   ingress {
@@ -174,7 +174,7 @@ resource "aws_security_group" "backend" {
     from_port       = 80
     to_port         = 80
     protocol        = "tcp"
-    security_groups = [var.alb_security_group]
+    security_groups = [var.alb_security_group_id]
   }
 
   ingress {

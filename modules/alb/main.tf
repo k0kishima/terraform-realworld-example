@@ -1,4 +1,4 @@
-resource "aws_security_group" "alb_sg" {
+resource "aws_security_group" "alb" {
   name        = "${var.project}-${var.env}-alb-sg"
   description = "Security group for ALB"
   vpc_id      = var.vpc_id
@@ -28,7 +28,7 @@ resource "aws_lb" "frontend" {
   name               = "${var.project}-${var.env}-fe-alb" # If the name is too long, an error will occur, so I shorten it to "fe".
   internal           = false
   load_balancer_type = "application"
-  security_groups    = [aws_security_group.alb_sg.id]
+  security_groups    = [aws_security_group.alb.id]
   subnets            = var.public_subnet_ids
 
   tags = {
@@ -85,7 +85,7 @@ resource "aws_lb" "backend" {
   name               = "${var.project}-${var.env}-be-alb"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = [aws_security_group.alb_sg.id]
+  security_groups    = [aws_security_group.alb.id]
   subnets            = var.public_subnet_ids
 
   tags = {
