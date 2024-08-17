@@ -23,7 +23,7 @@ variable "subnet_ids" {
   type        = list(string)
 }
 
-variable "alb_security_group" {
+variable "alb_security_group_id" {
   description = "The ID of the security group associated with the ALB"
   type        = string
 }

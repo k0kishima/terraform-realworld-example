@@ -1,6 +1,6 @@
 output "alb_security_group_id" {
   description = "The ID of the security group associated with the ALB"
-  value       = aws_security_group.alb_sg.id
+  value       = aws_security_group.alb.id
 }
 
 output "frontend_target_group_arn" {
