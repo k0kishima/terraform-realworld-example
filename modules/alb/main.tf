@@ -105,7 +105,7 @@ resource "aws_lb_target_group" "backend" {
   health_check {
     enabled             = true
     interval            = 30
-    path                = "/"
+    path                = "/health"
     port                = "traffic-port"
     protocol            = "HTTP"
     timeout             = 5
